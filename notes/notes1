@@ -1,0 +1,48 @@
+// Language: Turkish
+// Description: Explain the concepts of almost every code in the committed files
+// Warning: This file is not a part of the project 
+
+
+/*Aşağıdaki kod parçacığı express'i çağırmayı sağlar, ayriyeten "express-ejs-layouts" kütüphanesi html parçalarını sayfanın belirli kısmında çalıştırmaya yarar.*/
+const express = require('express')
+const app = express()
+const expressLayouts = require('express-ejs-layouts')
+
+
+/* EJS: EJS veya Gömülü JavaScript, Node.js için popüler bir şablon motorudur. js ve web geliştirme. HTML şablonlarınıza JavaScript kodunu yerleştirerek dinamik HTML içeriği oluşturmanıza olanak tanır.*/
+app.set('view engine','ejs')
+app.set('views',__dirname + '/views')
+app.set('layout', 'layouts/layout')
+app.use(expressLayouts)
+
+/* express.static ise resim veya video gibi statik durumda gereken dosyaları siteye göndermenize olanak sağlıyor. */
+app.use(express.static('public'))
+
+/* mongoose, MongoDB'ye daha kolay ulaşım sağlamanız için gerekli olan kütüphanedir, npm install mongoose diyerek doğrudan indirme yapabilirsiniz ancak bunun öncesinde mongoDB'yi indirdiğinizden emin olun.*/
+const mongoose = require('mongoose')
+mongoose.connect(process.env.DATABASE_URL)
+const db = mongoose.connection
+// Eğer herhangi bir hata varsa hatayı döndür
+db.on('error',error =>{
+    console.error(error)
+})
+// Bir kereliğine mahsus olmak üzere mongoose açıldığında konsola "Connected" yaz
+db.once('open',() =>{
+    console.error('Connected')
+})
+
+/* express'in dinlemesi için gereken portu veriyoruz */
+app.listen(process.env.PORT || 3000)
+
+
+/* Burada daha önceden tanımladığımız index.js'yi çağırıyoruz ve bu bizim homepage'imiz olacak */
+const indexRouter = require('./routes/index')
+app.use('/',indexRouter)
+
+/* indexRouter olarak tanımladığımız index.js'nin içinde bu var ve '/' yaparak sitenin açılışında bu sayfanın açılacığını söylüyoruz */
+router.get('/',(req,res)=>{
+    console.log("Home Page is started")
+})
+
+// Modülü dışarıya çıkartıyoruz ki server.js'de tanımlayabilelim
+module.exports = router
